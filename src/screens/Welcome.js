@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity, Button } from "react-native";
+import analytics from '@react-native-firebase/analytics';
 
 export default function Welcome(props) {
 
@@ -12,6 +13,16 @@ export default function Welcome(props) {
       <Image
         source={require('../assets/logo/moviedb-logo-white.png')}
         style={styles.logoImage}
+      />
+      <Button
+        title="Add tracking"
+        style={styles.analytics}
+        onPress={async () =>
+          await analytics().logEvent('genericevent', {
+            // id: 3745092,
+            item: 'it worked'
+            
+          })}
       />
     </View >
   );
@@ -31,5 +42,10 @@ const styles = StyleSheet.create({
     maxHeight: 300,
     marginBottom: 40,
   },
-
+  analytics: {
+    flex: 1,
+    width: 200,
+    maxHeight: 40,
+    marginBottom: 200,
+  }
 });
