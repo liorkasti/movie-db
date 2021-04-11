@@ -3,6 +3,8 @@ import { View, StyleSheet, Text, Dimensions, TouchableOpacity, Image, ActivateIn
 import { useHistory } from "react-router-dom";
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-community/google-signin';
+import firestore from '@react-native-firebase/firestore';
+import { ActivityIndicator } from 'react-native';
 
 import Welcome from "../screens/Welcome";
 import Favorites from "../screens/Favorites";
@@ -26,13 +28,20 @@ export default function Index(props) {
     const [indexPagination, setIndexPagination] = useState(1);
 
     const [initializing, setInitializing] = useState(true);
+    const [loading, setLoading] = useState(true); // Set loading to true on component mount
+
     const [user, setUser] = useState();
+    const [users, setUsers] = useState([]);
 
     const [movieList, setMovieList] = useState([])
     const [renderedMovie, setRenderedMovie] = useState([]);
     const [favoriteList, setFavoriteList] = useState([]);
 
     let history = useHistory();
+
+    // if (loading) {
+    //    return <ActivityIndicator />;
+    // }
 
     useEffect(() => {
         console.log("\ncomponentIndex: $0" + componentIndex)
@@ -118,13 +127,46 @@ export default function Index(props) {
     }
 
     onAuthStateChanged = (user) => {
+        //ema(uniq) validationil 
         setUser(user);
+        // setUsers({ ...users, key: user.email, favoriteList });
+
         if (initializing) setInitializing(false);
     }
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+
         return subscriber;
+    }, []);
+
+
+    useEffect(() => {
+        const subscriberData = firestore()
+            .collection('users')
+            .doc('liorkasti@gmail.com').get()
+            .then(userData => {
+                if(userData.exists){
+                // console.log('userrrrrrrrrrrrrrrr: '+ user + '\n\n')
+                console.log(userData)
+                }
+                else{
+                    console.log('no such document!')
+                }
+            })
+            .catch(err => {
+                console.log('Error getting documents', err);
+            });
+        // .onSnapshot(querySnapshot => {
+        //     querySnapshot.forEach(documentSnapshot => {
+        //         console.log('documentSnapshot: ', documentSnapshot);
+        //         //users.push({ ...users, key: user.email, favoriteList });
+        //     });
+
+        setUsers(users);
+        setLoading(false);
+        //});
+       return subscriberData;
     }, []);
 
     if (initializing) return null;
@@ -168,7 +210,7 @@ export default function Index(props) {
             return (
                 <View>
                     <GoogleSigninButton
-                        onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google! ', userInfo))}
+                        onPress={() => onGoogleButtonPress()}
                         title="Google Sign-In"
                         style={styles.btnSocial}
                         color={GoogleSigninButton.Color.Dark}
@@ -268,11 +310,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         flexWrap: 'nowrap',
-        height: 120,
         width: windowWidth * .8,
     },
     btnLogout: {
         flexDirection: 'row-reverse',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: 60,
         height: 30,
         // margin: 40,

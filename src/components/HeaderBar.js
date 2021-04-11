@@ -16,15 +16,15 @@ const HeaderBar = (props) => {
     <View style={styles.container}>
       <Text style={styles.bsD1}>BS&quot;D</Text>
       <View style={styles.buttonstack}>
-        <TouchableOpacity onPress={() => {
-          // TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option
+        {/* TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option */}
+        {/* <TouchableOpacity onPress={() => {
           // props.onSelectMenu()
         }} >
-          <Icon
-            name="menu"
-            style={styles.menuIcon}>
-          </Icon>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Icon
+          name="menu"
+          style={styles.menuIcon}>
+        </Icon>
 
         {props.componentIndex > 0 &&
           <>
@@ -48,8 +48,8 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
-    width: windowWidth,
-    height: 62,
+    // width: windowWidth,
+    // height: 62,
   },
   buttonstack: {
     flexDirection: 'row',
@@ -64,10 +64,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 18
   },
-  icon: {
-    color: COLORS.movieGreen,
-    fontSize: 28,
-  },
   menuIcon: {
     zIndex: 900,
     // justifyContent: 'flex-end',
@@ -76,7 +72,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 30,
     top: 0,
-    left: windowWidth*0.9
+    left: windowWidth * 0.9
   },
   backIcon: {
     zIndex: 900,
@@ -87,15 +83,6 @@ const styles = StyleSheet.create({
     top: 0,
     right: 20
   },
-  header: {
-    position: "absolute",
-    width: '100%',
-    color: "#4287f5",
-    color: COLORS.movieGreen,
-    fontSize: 20,
-    fontFamily: "roboto-regular",
-    textAlign: "center",
-  }
 });
 
 export default HeaderBar;
