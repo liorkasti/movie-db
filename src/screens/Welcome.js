@@ -5,6 +5,12 @@ import analytics from '@react-native-firebase/analytics';
 export default function Welcome(props) {
 
   useEffect(() => {
+    // console.log(props);
+    // if (props.componentIndex === 0) {
+    //   analytics().setCurrentScreen(props.currentComponent, props.currentComponent)
+    //   analytics().setUserId("8")
+    //   analytics().setUserProperty({ ["username"]: "Test" })
+    // }
   }, [])
 
 
@@ -14,16 +20,15 @@ export default function Welcome(props) {
         source={require('../assets/logo/moviedb-logo-white.png')}
         style={styles.logoImage}
       />
-      <Button
+      {/* <Button
         title="Add tracking"
         style={styles.analytics}
         onPress={async () =>
           await analytics().logEvent('genericevent', {
-            // id: 3745092,
+            id: 3745092,
             item: 'it worked'
-            
           })}
-      />
+      /> */}
     </View >
   );
 }

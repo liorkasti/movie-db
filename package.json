@@ -1,7 +1,7 @@
 {
   "name": "theMovieDB",
   "version": "0.0.1",
-  "private": true,  
+  "private": true,
   "created by": "Lior Kastenbaum",
   "scripts": {
     "android": "react-native run-android",
@@ -13,6 +13,8 @@
   "dependencies": {
     "@react-native-firebase/analytics": "^11.2.0",
     "@react-native-firebase/app": "^11.2.0",
+    "@react-native-firebase/auth": "^11.2.0",
+    "@react-native-community/google-signin": "^4.0.3",
     "axios": "^0.20.0",
     "babel-preset-react-native": "2.1.0",
     "react": "16.13.1",
