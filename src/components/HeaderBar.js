@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import {COLORS} from '../utils/constants';
+import { COLORS } from '../utils/constants';
 
 const HeaderBar = (props) => {
   const [open, setOpen] = useState(false);
@@ -14,27 +14,30 @@ const HeaderBar = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerStack}>
-        <Text style={styles.bsD1}>BS&quot;D</Text>
-        <View style={styles.buttonstack}>
+      <Text style={styles.bsD1}>BS&quot;D</Text>
+      <View style={styles.buttonstack}>
+        <TouchableOpacity onPress={() => {
+          // TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option
+          // props.onSelectMenu()
+        }} >
+          <Icon
+            name="menu"
+            style={styles.menuIcon}>
+          </Icon>
+        </TouchableOpacity>
 
-          {props.componentIndex > 0 &&
-            <>
-              <TouchableOpacity onPress={() => {
-                props.onBack()
-              }} >
-                <Icon
-                  name="chevron-left"
-                  style={styles.backIcon}>
-                </Icon>
-              </TouchableOpacity>
-
-              <View style={styles.createButtonRow}>
-
-              </View>
-            </>
-          }
-        </View>
+        {props.componentIndex > 0 &&
+          <>
+            <TouchableOpacity onPress={() => {
+              props.onBack()
+            }} >
+              <Icon
+                name="chevron-left"
+                style={styles.backIcon}>
+              </Icon>
+            </TouchableOpacity>
+          </>
+        }
       </View>
     </View >
   );
@@ -46,11 +49,11 @@ const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     width: windowWidth,
-  },
-  homeContainer: {
     height: 62,
   },
-  headerStack: {
+  buttonstack: {
+    flexDirection: 'row',
+    width: windowWidth,
   },
   bsD1: {
     color: COLORS.lightCard,
@@ -65,6 +68,16 @@ const styles = StyleSheet.create({
     color: COLORS.movieGreen,
     fontSize: 28,
   },
+  menuIcon: {
+    zIndex: 900,
+    // justifyContent: 'flex-end',
+    color: COLORS.lightCard,
+    fontSize: 35,
+    width: 24,
+    height: 30,
+    top: 0,
+    left: windowWidth*0.9
+  },
   backIcon: {
     zIndex: 900,
     color: COLORS.lightCard,
@@ -72,7 +85,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 30,
     top: 0,
-    left: 4
+    right: 20
   },
   header: {
     position: "absolute",
