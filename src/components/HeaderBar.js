@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import {COLORS} from '../utils/constants';
+import { COLORS } from '../utils/constants';
 
 const HeaderBar = (props) => {
   const [open, setOpen] = useState(false);
@@ -18,20 +18,22 @@ const HeaderBar = (props) => {
         <Text style={styles.bsD1}>BS&quot;D</Text>
         <View style={styles.buttonstack}>
 
-          {props.componentIndex > 0 &&
+          {props.componentIndex > 0 ?
             <>
               <TouchableOpacity onPress={() => {
                 props.onBack()
               }} >
-                <Icon
-                  name="chevron-left"
-                  style={styles.backIcon}>
-                </Icon>
+                <Icon name="chevron-left" style={styles.backIcon} />
               </TouchableOpacity>
 
               <View style={styles.createButtonRow}>
 
               </View>
+            </>
+            :
+            //TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option
+            <>
+              <Icon name="menu" style={styles.backIcon} />
             </>
           }
         </View>
@@ -69,7 +71,8 @@ const styles = StyleSheet.create({
     zIndex: 900,
     color: COLORS.lightCard,
     fontSize: 35,
-    width: "100%",
+    // width: '100%',
+    width: 24,
     height: 30,
     top: 0,
     left: 4

@@ -111,10 +111,13 @@ export default function Index(props) {
         offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     });
 
-    const logoff = () => {
-        auth()
-            .signOut()
-            .then(() => console.log('User signed out!'));
+    const logoff = async () => {
+        try {
+            await auth().signOut().then(() => console.log('User signed out!'));
+            setUser(null);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     onAuthStateChanged = (user) => {
@@ -133,7 +136,6 @@ export default function Index(props) {
         try {
             const { idToken } = await GoogleSignin.signIn();
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             if (userInfo) {
@@ -142,21 +144,16 @@ export default function Index(props) {
             }
             return auth().signInWithCredential(googleCredential);
         } catch {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                // user cancelled the login flow
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-                // operation (e.g. sign in) is in progress already
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                // play services not available or outdated
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) { // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) { // operation (e.g. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) { // play services not available or outdated
             } else {
                 if (error.code === 'auth/email-already-in-use') {
                     console.log('That email address is already in use!');
                 }
-
                 if (error.code === 'auth/invalid-email') {
                     console.log('That email address is invalid!');
                 }
-
                 console.error(error);
             }
         }
@@ -283,8 +280,8 @@ const styles = StyleSheet.create({
     btnTitle: { width: 60, color: COLORS.favorite, padding: 5 },
     btnSocial: { width: 110, height: 40, padding: 5 },
     profileImg: {
-        height: 60,
-        width: 60,
+        height: 50,
+        width: 50,
         padding: 10,
         borderRadius: 40,
     },
