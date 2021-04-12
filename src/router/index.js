@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Dimensions, TouchableOpacity, Image, ActivateIn
 import { useHistory } from "react-router-dom";
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-community/google-signin';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/firestore';
 import { ActivityIndicator } from 'react-native';
 
 import Welcome from "../screens/Welcome";
@@ -15,6 +15,8 @@ import FooterBar from "../components/FooterBar";
 import { TMDB, COLORS } from '../utils/constants';
 import useFetch from '../hooks/useFetch';
 import { appendToFavorites, removeFavorite, updateFavorites } from "../action/modifyActions.js";
+
+const currentUser = auth().currentUser;
 
 export default function Index(props) {
     const [componentIndex, setComponentIndex] = useState(0);
@@ -36,6 +38,26 @@ export default function Index(props) {
     const [movieList, setMovieList] = useState([])
     const [renderedMovie, setRenderedMovie] = useState([]);
     const [favoriteList, setFavoriteList] = useState([]);
+
+    console.log("currentUser: " + JSON.stringify(currentUser.providerData))
+    // fetchFavorites();
+    let list = database().collection('users')
+        .doc(currentUser.email)
+        .get()//.once('value')
+        .then(userData => {
+            if (userData.exists) {
+                console.log('list data: ' + JSON.stringify(userData.data().favorites[0]) + ', ')
+            }
+            else {
+                console.log('no such document!')
+            }
+
+            // setFavoriteList(list)
+        })
+        .catch(err => {
+            console.log('Error getting documents', err);
+        });
+
 
     let history = useHistory();
 
@@ -63,6 +85,7 @@ export default function Index(props) {
     }, [componentIndex])
 
     useEffect(() => {
+
         // fetchMovies();
         popularMovies(indexPagination)
         setMovieList([...movieList, popularResult])
@@ -95,7 +118,8 @@ export default function Index(props) {
     }
 
     // update the movies list
-    const favoritesHandler = (movie) => {
+    const favoritesHandler = async (movie) => {
+
         console.log("Movie to be rendered: " + JSON.stringify(movie.title));
         const index = popularResult.findIndex(m => m.id === movie.id);
         console.log("exist? " + (popularResult[index].stared))
@@ -104,13 +128,22 @@ export default function Index(props) {
             popularResult[index].stared = false
             // await setFavoriteList(favoriteList.movie.filter(popularMovies[index]));
             //  setFavoriteList(favoriteList.splice(favoriteList[index],1));
-            setFavoriteList(removeFavorite(favoriteList, movie));
+            database()
+                .collection('users')
+                .doc('liorkasti@gmail.com').update({ favorites: [...favoriteList, movie] })
+                .then(setFavoriteList(favoriteList.filter(m => m.id !== movie.id)))
+
+            // await setFavoriteList(removeFavorite(favoriteList, movie));
             // await setFavoriteList(favoriteList.filter(m => m.id !== movie.id));
             // setComponentIndex(1)
         } else {
             // setFavoriteList(appendToFavorites(popularResult, favoriteList, movie))
-            setFavoriteList([...favoriteList, { movie }])
             popularResult[index].stared = true
+            database()
+                .collection('users')
+                .doc('liorkasti@gmail.com').update({ favorites: [...favoriteList, movie] })
+                .then(setFavoriteList([...favoriteList, { movie }]))
+
         }
     }
 
@@ -124,10 +157,13 @@ export default function Index(props) {
         auth()
             .signOut()
             .then(() => console.log('User signed out!'));
+        // setUser(user);
     }
 
     onAuthStateChanged = (user) => {
-        //ema(uniq) validationil 
+        // console.log("ref: ", ref + '\n\n');
+        // console.log("currentUser: ", user + '\n\n');
+        //email(uniq) validation 
         setUser(user);
         // setUsers({ ...users, key: user.email, favoriteList });
 
@@ -142,22 +178,31 @@ export default function Index(props) {
 
 
     useEffect(() => {
-        const subscriberData = firestore()
+        // let list = database().collection('users').doc('liorkasti@gmail.com').get()
+        //     .then(console.log("favorites list: " + list))
+
+        // console.log('currentUser.email:' , currentUser)
+        const subscriberData = database()
             .collection('users')
             .doc('liorkasti@gmail.com').get()
             .then(userData => {
-                if(userData.exists){
-                // console.log('userrrrrrrrrrrrrrrr: '+ user + '\n\n')
-                console.log(userData)
+                if (userData.exists) {
+                    console.log('ref: ' + userData.ref.path + '\n\n')
+                    console.log('id: ' + userData.uid + '\n\n')
+                    setFavoriteList(userData.data().favorites)
                 }
-                else{
+                else {
                     console.log('no such document!')
                 }
+
+                // setFavoriteList(list)
             })
             .catch(err => {
                 console.log('Error getting documents', err);
             });
-        // .onSnapshot(querySnapshot => {
+
+
+        // database().collection('users').onSnapshot(querySnapshot => {
         //     querySnapshot.forEach(documentSnapshot => {
         //         console.log('documentSnapshot: ', documentSnapshot);
         //         //users.push({ ...users, key: user.email, favoriteList });
@@ -166,7 +211,7 @@ export default function Index(props) {
         setUsers(users);
         setLoading(false);
         //});
-       return subscriberData;
+        return subscriberData;
     }, []);
 
     if (initializing) return null;
@@ -178,9 +223,11 @@ export default function Index(props) {
 
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
+
             if (userInfo) {
                 console.log("GOOGLE USER", userInfo.user);
                 // alert('welcome ' + userInfo.user.name);
+                // setCurrentUser(userInfo.user)
             }
             return auth().signInWithCredential(googleCredential);
         } catch {

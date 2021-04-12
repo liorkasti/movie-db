@@ -9,8 +9,8 @@
 //   }
 // };
 
-export const appendToFavorites = (popularResult, favoriteList, movie) => {
-  const exist = popularResult.findIndex(m => m.id === movie.id);
+export const appendToFavorites = async (popularResult, favoriteList, movie) => {
+  const exist = await popularResult.findIndex(m => m.id === movie.id);
   console.log("\n############\n\nexist: ##############" + exist)
 
   if (exist === -1) {
@@ -22,5 +22,5 @@ export const appendToFavorites = (popularResult, favoriteList, movie) => {
 
 
 export const removeFavorite = async (favoriteList, movie) => {
-  return favoriteList.filter(m => m.id !== movie.id);
+  return await favoriteList.filter(m => m.id !== movie.id);
 };
