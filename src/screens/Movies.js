@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image, TextInput, SafeAreaView, Dimensions } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, Image, SafeAreaView, Dimensions } from "react-native";
 
 import useSearch from '../hooks/useSearch';
 import SearchBar from '../components/SearchBar';
@@ -7,7 +7,6 @@ import { COLORS } from '../utils/constants';
 import ItemsList from '../components/ItemsList'
 import Pagination from '../components/Pagination';
 
-// export default Movies = (props) => {
 export default function Movies(props) {
 
   const [term, setTerm] = useState();
@@ -44,7 +43,7 @@ export default function Movies(props) {
           onSelectedMovie={props.onSelectedMovie}
           renderedMovie={props.renderedMovie}
           onPressFavorite={props.favoritesHandler}
-          // onPressFavorite={props.onPressFavorite}
+          onPressFavorite={props.onPressFavorite}
           posterUrlBase={props.posterUrlBase}
         />
         :

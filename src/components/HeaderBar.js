@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { COLORS } from '../utils/constants';
 
 const HeaderBar = (props) => {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-
-    if (open) props.setShowMenu(false)
-  }, [props.componentIndex]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.bsD1}>BS&quot;D</Text>
       <View style={styles.buttonstack}>
         {/* TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option */}
-        {/* <TouchableOpacity onPress={() => {
-          // props.onSelectMenu()
-        }} >
-        </TouchableOpacity> */}
         <Icon
           name="menu"
           style={styles.menuIcon}>
@@ -44,12 +34,9 @@ const HeaderBar = (props) => {
 }
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
-    // width: windowWidth,
-    // height: 62,
   },
   buttonstack: {
     flexDirection: 'row',
@@ -66,7 +53,6 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     zIndex: 900,
-    // justifyContent: 'flex-end',
     color: COLORS.lightCard,
     fontSize: 35,
     width: 24,

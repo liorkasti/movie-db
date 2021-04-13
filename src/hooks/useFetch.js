@@ -5,7 +5,7 @@ import database from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 // import AsyncStorage from '@react-native-community/async-storage';
 
-import {TMDB} from "../utils/constants";
+import { TMDB } from "../utils/constants";
 
 const currentUser = auth().currentUser;
 
@@ -16,10 +16,12 @@ export default () => {
     const [isStared, setIsStared] = useState(false);
 
     useEffect(() => {
-        // console.log('fetch list data: ' + JSON.stringify(favoriteList))
-      }, [])
+        console.log('fדדדדדדדד: ' + JSON.stringify(favoriteList))
+        console.log("\currentUser.email: $0" + currentUser.email)
 
-      const fetchFavorites = async () => {
+    }, [])
+
+    const fetchFavorites = async () => {
         console.log("currentUser: " + JSON.stringify(currentUser.providerData))
         database().collection('users').doc(currentUser.email).get()
             .then(userData => {
@@ -37,7 +39,7 @@ export default () => {
 
     // update the favorite list
     const favoritesHandler = async (movie) => {
-        console.log("Movie to be rendered: " + JSON.stringify(movie.id));
+        console.log("Movie to be rendered: " + JSON.stringify(movie));
         const index = popularResult.findIndex(m => m.id === movie.id);
         console.log("exist? " + (popularResult[index].stared))
         console.log("index: " + (index))
@@ -51,16 +53,16 @@ export default () => {
                 }).then(fetchFavorites())
 
         } else { // add to favorite list
-            popularResult[index].stared = true
             database()
                 .collection('users')
                 .doc(currentUser.email)
                 .update({
                     favorites: database.FieldValue.arrayUnion({ movie })
                 })
-                // .update({ favorites: [...favoriteList, { movie, stared: true }] })
-                .then(fetchFavorites())
-
+                .then(
+                    fetchFavorites(),
+                    popularResult[index].stared = true
+                )
         }
     }
 
@@ -95,6 +97,6 @@ export default () => {
         }
     }
 
-    return [favoriteList, setFavoriteList, fetchFavorites, favoritesHandler, popularMovies, popularResult, errorFetchMessage];
+    return [favoriteList, setFavoriteList, popularMovies, favoritesHandler, popularMovies, popularResult, errorFetchMessage];
     // return [popularMovies, popularResult, errorFetchMessage];
 };
