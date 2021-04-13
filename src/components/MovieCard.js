@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import {COLORS} from '../utils/constants';
+import { COLORS } from '../utils/constants';
 
 const MovieCard = props => {
-
-    useEffect(() => {
-        // console.log("\n\n\n MovieCard props.itemData.item: \n\n ------------------" + JSON.stringify(props.itemData.item))
-    }, []);
 
     return (
         <View style={styles.result}>
@@ -17,9 +13,15 @@ const MovieCard = props => {
                     props.onSelectedMovie(props.itemData.item)
                 }}
             >
-                <Text style={styles.heading}>
-                    {props.title &&  props.title}
-                </Text>
+                {props.itemData.item.stared ?
+                    <Text style={styles.headingActive}>
+                        {props.title && props.title}
+                    </Text>
+                    :
+                    <Text style={styles.heading}>
+                        {props.title && props.title}
+                    </Text>
+                }
                 <Text style={styles.yearText}>
                     {props.year && props.year.substring(0, 7)}
                 </Text>
@@ -62,6 +64,15 @@ const styles = StyleSheet.create({
         borderColor: COLORS.lightCard,
         borderBottomWidth: .7,
     },
+    headingActive: {
+        width: windowWidth * .7,
+        fontSize: 20,
+        color: COLORS.favorite,
+        fontSize: 20,
+        fontWeight: '700',
+        textAlign: 'left',
+        paddingTop: 20,
+    },
     heading: {
         width: windowWidth * .7,
         fontSize: 20,
@@ -70,7 +81,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         textAlign: 'left',
         paddingTop: 20,
-        // paddingHorizontal: 20,
     },
     yearText: {
         width: windowWidth * .7,
@@ -79,7 +89,6 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontWeight: '300',
         textAlign: 'left',
-        // paddingHorizontal: 20,
         paddingTop: 5,
         paddingBottom: 20,
     },

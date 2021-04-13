@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-community/google-signin';
-import database from '@react-native-firebase/firestore';
-import { ActivityIndicator } from 'react-native';
 
-import { TMDB, COLORS } from '../utils/constants';
+import { COLORS } from '../utils/constants';
 
 const Login = (props) => {
 
     const [user, setUser] = useState();
-
 
     function wait(timeout) {
         return new Promise(resolve => {

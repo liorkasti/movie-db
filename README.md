@@ -18,9 +18,12 @@ yarn start / npm start
 ```
 
 ###### TODOs: 
-* Fix remove from favorites list
+* Test subscriptions via other devices and firestore's reference once login
+* Modify remove a movie from favorites list
+* Synch Movie stared icon UI
 * Add a user subscriptions options
+* Fix Pagination logic (logic >0)
+* Add footerBar selection indication UI
 * Add app splashscreen
 * Debug ActivateIndicator and add style to it
-* When selecting movie from favorite screen the back button should take back to Favoriets?
 

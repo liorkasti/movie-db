@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Alert, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from "react-native-vector-icons/Feather";
 import { COLORS } from '../utils/constants';
 
@@ -46,6 +46,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     opacity: 0.8
-  },
-
+  }
 });

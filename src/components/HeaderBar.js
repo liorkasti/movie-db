@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, } from "react-native";
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { COLORS } from '../utils/constants';
@@ -9,7 +9,7 @@ const HeaderBar = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.bsD1}>BS&quot;D</Text>
-      <View style={styles.buttonstack}>
+      <View style={styles.buttonStack}>
         {/* TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option */}
         <Icon
           name="menu"
@@ -38,7 +38,7 @@ const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
   },
-  buttonstack: {
+  buttonStack: {
     flexDirection: 'row',
     width: windowWidth,
   },
