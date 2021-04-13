@@ -8,9 +8,6 @@ const ItemsList = (props) => {
 
   useEffect(() => {
     // console.warn("------------------\n\nItemsList props.results: \n\n-------------------------", JSON.stringify(props.results) + '---------------------')
-    if (props.favoriteList.length) {
-      
-    }
 
   }, [])
 

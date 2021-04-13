@@ -24,7 +24,6 @@ export default function Index(props) {
 
     const components = { Welcome, Movies, Movie, Favorites };
     const componentKeys = ["Welcome", "Movies", "Movie", "Favorites"];
-    // const headers = { Welcome: "My Movies Log", Movies: "Most Popular Movies", Movie: "Movie", Favorites: "Favorites" };
 
     const [popularMovies, popularResult, errorFetchMessage] = useFetch();
     const [indexPagination, setIndexPagination] = useState(1);
@@ -38,34 +37,11 @@ export default function Index(props) {
     const [movieList, setMovieList] = useState([])
     const [renderedMovie, setRenderedMovie] = useState([]);
     const [favoriteList, setFavoriteList] = useState([]);
-
-    console.log("currentUser: " + JSON.stringify(currentUser.providerData))
-    // fetchFavorites();
-    let list = database().collection('users')
-        .doc(currentUser.email)
-        .get()//.once('value')
-        .then(userData => {
-            if (userData.exists) {
-                console.log('list data: ' + JSON.stringify(userData.data().favorites[0]) + ', ')
-            }
-            else {
-                console.log('no such document!')
-            }
-
-            // setFavoriteList(list)
-        })
-        .catch(err => {
-            console.log('Error getting documents', err);
-        });
-
-
-    let history = useHistory();
-
-    // if (loading) {
-    //    return <ActivityIndicator />;
-    // }
+    const [isStared, setIsStared] = useState(false);
 
     useEffect(() => {
+        fetchFavorites()
+        
         console.log("\ncomponentIndex: $0" + componentIndex)
         if (componentIndex === 0) {
             setCurrentComponent("Welcome");
@@ -77,21 +53,11 @@ export default function Index(props) {
             setCurrentComponent("Movie");
         }
         // TODO: setPreviewIndex OR setFlag on and check flag when pressing back button come from Favorites. than the back should returns to Favorites screen and not  
-        if (componentIndex === 3) {
-            // history.push("Welcome");
-        }
-        // console.log("componentIndex: ", componentIndex);
-
     }, [componentIndex])
 
     useEffect(() => {
-
-        // fetchMovies();
         popularMovies(indexPagination)
         setMovieList([...movieList, popularResult])
-        // setMovieList(...movieList, popularResult)
-        // console.log("\n############\n$0" + indexPagination)
-        // console.log("\term:\n" + term+'\n-------')
     }, [indexPagination]);
 
     const handleFooterBar = (page) => {
@@ -117,32 +83,54 @@ export default function Index(props) {
         setComponentIndex(2)
     }
 
-    // update the movies list
+    const fetchFavorites = async () => {
+        console.log("currentUser: " + JSON.stringify(currentUser.providerData))
+        database().collection('users').doc(currentUser.email).get()
+            .then(userData => {
+                if (userData.exists) {
+                    console.log('fetchFavorites data list: ' + JSON.stringify(userData.data().favorites) + ', \n---\n ')
+                    setFavoriteList(userData.data().favorites)
+                    // favoriteList.push({
+                    //     id: movie.id, title: movie.title, rating: movie.vote_average,
+                    //     poster: movie.poster_path, summary: movie.overview, year: movie.release_date,
+                    //     stared: isStared
+                    // })
+                }
+                else { console.log('no such document!') }
+                // setFavoriteList(JSON.stringify(userData.data()))
+                console.log('favoriteList: ' + JSON.stringify(favoriteList) + ', \n---\n ')
+            })
+            .catch(err => {
+                console.log('Error getting documents', err);
+            });
+    }
+
+    // update the favorite list
     const favoritesHandler = async (movie) => {
 
-        console.log("Movie to be rendered: " + JSON.stringify(movie.title));
+        console.log("Movie to be rendered: " + JSON.stringify(movie.id));
         const index = popularResult.findIndex(m => m.id === movie.id);
         console.log("exist? " + (popularResult[index].stared))
         console.log("index: " + (index))
-        if (popularResult[index].stared) {
+        if (popularResult[index].stared) { // remove from favorite list
             popularResult[index].stared = false
-            // await setFavoriteList(favoriteList.movie.filter(popularMovies[index]));
-            //  setFavoriteList(favoriteList.splice(favoriteList[index],1));
-            database()
-                .collection('users')
-                .doc('liorkasti@gmail.com').update({ favorites: [...favoriteList, movie] })
-                .then(setFavoriteList(favoriteList.filter(m => m.id !== movie.id)))
+            console.log("favoriteList: " + JSON.stringify(favoriteList));
+            console.log("before: " +favoriteList.length)
+            console.log("movie to remove: " + movie.title + " " + movie.id)
+            var newList = favoriteList.filter(m => m.id !== movie.id);
+            setFavoriteList(newList);
+            console.log("after filter: " + favoriteList)
 
-            // await setFavoriteList(removeFavorite(favoriteList, movie));
-            // await setFavoriteList(favoriteList.filter(m => m.id !== movie.id));
-            // setComponentIndex(1)
-        } else {
-            // setFavoriteList(appendToFavorites(popularResult, favoriteList, movie))
+            // database()
+            //     .collection('users')
+            //     .doc(currentUser.email).doc(favorites).update({ favorites: [newList]})
+            //     .then(setFavoriteList(newList))
+        } else { // add to favorite list
             popularResult[index].stared = true
             database()
                 .collection('users')
-                .doc('liorkasti@gmail.com').update({ favorites: [...favoriteList, movie] })
-                .then(setFavoriteList([...favoriteList, { movie }]))
+                .doc(currentUser.email).update({ favorites: [...favoriteList, { movie, stared: true }] })
+                .then(setFavoriteList([...favoriteList, { movie, stared: true }]))
 
         }
     }
@@ -157,62 +145,18 @@ export default function Index(props) {
         auth()
             .signOut()
             .then(() => console.log('User signed out!'));
-        // setUser(user);
     }
 
     onAuthStateChanged = (user) => {
-        // console.log("ref: ", ref + '\n\n');
-        // console.log("currentUser: ", user + '\n\n');
-        //email(uniq) validation 
         setUser(user);
-        // setUsers({ ...users, key: user.email, favoriteList });
-
         if (initializing) setInitializing(false);
     }
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-
         return subscriber;
     }, []);
 
-
-    useEffect(() => {
-        // let list = database().collection('users').doc('liorkasti@gmail.com').get()
-        //     .then(console.log("favorites list: " + list))
-
-        // console.log('currentUser.email:' , currentUser)
-        const subscriberData = database()
-            .collection('users')
-            .doc('liorkasti@gmail.com').get()
-            .then(userData => {
-                if (userData.exists) {
-                    console.log('ref: ' + userData.ref.path + '\n\n')
-                    console.log('id: ' + userData.uid + '\n\n')
-                    setFavoriteList(userData.data().favorites)
-                }
-                else {
-                    console.log('no such document!')
-                }
-
-                // setFavoriteList(list)
-            })
-            .catch(err => {
-                console.log('Error getting documents', err);
-            });
-
-
-        // database().collection('users').onSnapshot(querySnapshot => {
-        //     querySnapshot.forEach(documentSnapshot => {
-        //         console.log('documentSnapshot: ', documentSnapshot);
-        //         //users.push({ ...users, key: user.email, favoriteList });
-        //     });
-
-        setUsers(users);
-        setLoading(false);
-        //});
-        return subscriberData;
-    }, []);
 
     if (initializing) return null;
 
@@ -226,26 +170,19 @@ export default function Index(props) {
 
             if (userInfo) {
                 console.log("GOOGLE USER", userInfo.user);
-                // alert('welcome ' + userInfo.user.name);
-                // setCurrentUser(userInfo.user)
             }
             return auth().signInWithCredential(googleCredential);
         } catch {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                // user cancelled the login flow
             } else if (error.code === statusCodes.IN_PROGRESS) {
-                // operation (e.g. sign in) is in progress already
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                // play services not available or outdated
             } else {
                 if (error.code === 'auth/email-already-in-use') {
                     console.log('That email address is already in use!');
                 }
-
                 if (error.code === 'auth/invalid-email') {
                     console.log('That email address is invalid!');
                 }
-
                 console.error(error);
             }
         }
