@@ -9,7 +9,7 @@ import Movies from "../screens/Movies";
 import Login from "../components/Login";
 import HeaderBar from "../components/HeaderBar";
 import FooterBar from "../components/FooterBar";
-import { TMDB, COLORS } from '../utils/constants';
+import { TMDB } from '../utils/constants';
 import useFetch from '../hooks/useFetch';
 
 const currentUser = auth().currentUser;
@@ -69,48 +69,6 @@ export default function Index(props) {
         setComponentIndex(2)
     }
 
-<<<<<<< HEAD
-    // update the movies list
-    const favoritesHandler = (movie) => {
-        console.log("Movie to be rendered: " + JSON.stringify(movie.title));
-        const index = popularResult.findIndex(m => m.id === movie.id);
-        console.log("exist? " + (popularResult[index].stared))
-        console.log("index: " + (index))
-        if (popularResult[index].stared) {
-            popularResult[index].stared = false
-            // await setFavoriteList(favoriteList.movie.filter(popularMovies[index]));
-            //  setFavoriteList(favoriteList.splice(favoriteList[index],1));
-            setFavoriteList(removeFavorite(favoriteList, movie));
-            // await setFavoriteList(favoriteList.filter(m => m.id !== movie.id));
-            // setComponentIndex(1)
-        } else {
-            // setFavoriteList(appendToFavorites(popularResult, favoriteList, movie))
-            setFavoriteList([...favoriteList, { movie }])
-            popularResult[index].stared = true
-        }
-    }
-
-
-    GoogleSignin.configure({
-        webClientId: '1081725631941-b4gol59tl4imc6kj8pf3vc351rhs1cs1.apps.googleusercontent.com',
-        offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-    });
-
-    const logoff = async () => {
-        try {
-            await auth().signOut().then(() => console.log('User signed out!'));
-            setUser(null);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    onAuthStateChanged = (user) => {
-        setUser(user);
-        if (initializing) setInitializing(false);
-    }
-=======
->>>>>>> features/firestore-setup
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -118,74 +76,6 @@ export default function Index(props) {
         return subscriber;
     }, []);
 
-<<<<<<< HEAD
-    if (initializing) return null;
-
-    onGoogleButtonPress = async () => {
-        try {
-            const { idToken } = await GoogleSignin.signIn();
-            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            if (userInfo) {
-                console.log("GOOGLE USER", userInfo.user);
-                // alert('welcome ' + userInfo.user.name);
-            }
-            return auth().signInWithCredential(googleCredential);
-        } catch {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) { // user cancelled the login flow
-            } else if (error.code === statusCodes.IN_PROGRESS) { // operation (e.g. sign in) is in progress already
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) { // play services not available or outdated
-            } else {
-                if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in use!');
-                }
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                }
-                console.error(error);
-            }
-        }
-    }
-
-    const Login = () => {
-
-        if (!user) {
-            return (
-                <View>
-                    <GoogleSigninButton
-                        onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google! ', userInfo))}
-                        title="Google Sign-In"
-                        style={styles.btnSocial}
-                        color={GoogleSigninButton.Color.Dark}
-                        size={GoogleSigninButton.Size.Standard}
-                    />
-                </View>
-            );
-        } return (
-            <>
-                {componentIndex === 0 &&
-                    <View style={styles.profileContainer}>
-                        < Image
-                            source={{ uri: user.photoURL }}
-                            style={styles.profileImg}
-                            resizeMode='cover'
-                        />
-                        <Text style={styles.prompt}>Welcome {user.displayName}</Text>
-                        <TouchableOpacity
-                            title="Logout"
-                            onPress={() => logoff()}
-                            style={styles.btnLogout}
-                        >
-                            <Text style={styles.btnTitle}>Logout</Text>
-                        </TouchableOpacity>
-                    </View>
-                }
-            </>
-        );
-    }
-=======
->>>>>>> features/firestore-setup
 
     const CurrentComponentRouter = () => {
         if (!components[currentComponent]) return <ActivateIndicator />
@@ -252,39 +142,5 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-<<<<<<< HEAD
-    },
-    profileContainer: {
-        flexDirection: 'row',
-        // flexWrap: 'nowrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        // height: 120,
-        // paddingLeft: 20,
-        // width: 120, 
-        // justifyContent: 'center',
-        width: windowWidth * 0.9,
-    },
-    btnLogout: {
-        // flexDirection: 'row-reverse',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 65,
-        height: 30,
-        right: 14,
-        color: 'white',
-        backgroundColor: COLORS.lightCard,
-    },
-    btnTitle: { width: 60, color: COLORS.favorite, padding: 5 },
-    prompt: { color: 'white', padding: 5, right: 24,},
-    btnSocial: { width: 110, height: 40, padding: 5, },
-    profileImg: {
-        height: 50,
-        width: 50,
-        padding: 10,
-        borderRadius: 40,
-    },
-=======
     }
->>>>>>> features/firestore-setup
 });

@@ -7,9 +7,11 @@ export default function Pagination(props) {
 
   return (
     <View style={styles.results}>
-      <TouchableOpacity onPress={props.GoToPreviousPage}>
-        <Icon name='chevrons-left' style={styles.icon} />
-      </TouchableOpacity>
+      {props.indexPagination > 0 &&
+        <TouchableOpacity onPress={props.GoToPreviousPage}>
+          <Icon name='chevrons-left' style={styles.icon} />
+        </TouchableOpacity>
+      }
 
       <Text style={styles.pagesIndication}>
         {(props.indexPagination * 20 - 19) + '-' + (props.indexPagination * 20)}
