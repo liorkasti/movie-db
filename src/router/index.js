@@ -36,8 +36,10 @@ export default function Index(props) {
     const [renderedMovie, setRenderedMovie] = useState([]);
     const [favoriteList, setFavoriteList] = useState([]);
     const [isStared, setIsStared] = useState(false);
+    
 
     useEffect(() => {
+        // bootstrap();
         console.log("\ncomponentIndex: $0" + componentIndex)
         if (componentIndex === 0) {
             setCurrentComponent("Welcome");
@@ -110,19 +112,12 @@ export default function Index(props) {
         console.log("index: " + (index))
         if (popularResult[index].stared) { // remove from favorite list
             popularResult[index].stared = false
-            console.log("favoriteList: " + JSON.stringify(favoriteList));
-            console.log("before: " + favoriteList.length)
-            console.log("movie to remove: " + movie.title + " " + movie.id)
-            var newList = favoriteList.filter(m => m.id !== movie.id);
-            setFavoriteList(newList);
-            console.log("after filter: " + favoriteList)
-
             database()
                 .collection('users')
                 .doc(currentUser.email)
                 .update({
                     favorites: database.FieldValue.delete({movie, stared: true})
-                }).then(setFetchFavorites(favoriteList.filter(m => m.id !== movie.id)))
+                }).then(setFavoriteList(favoriteList.filter(m => m.id !== movie.id)))
 
         } else { // add to favorite list
             popularResult[index].stared = true
@@ -190,6 +185,12 @@ onGoogleButtonPress = async () => {
         }
     }
 }
+
+async function bootstrap() {
+    await database().settings({
+      persistence: false, // disable offline persistence
+    });
+  }
 
 const Login = () => {
 
