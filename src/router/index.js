@@ -1,41 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Dimensions, TouchableOpacity, Image, ActivateIndicator } from "react-native"
-import { useHistory } from "react-router-dom";
+import { View, StyleSheet, Text, Dimensions, ActivateIndicator } from "react-native"
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-community/google-signin';
 
 import Welcome from "../screens/Welcome";
 import Favorites from "../screens/Favorites";
 import Movie from "../screens/Movie";
 import Movies from "../screens/Movies";
+import Login from "../components/Login";
 import HeaderBar from "../components/HeaderBar";
 import FooterBar from "../components/FooterBar";
 import { TMDB, COLORS } from '../utils/constants';
 import useFetch from '../hooks/useFetch';
-import { appendToFavorites, removeFavorite, updateFavorites } from "../action/modifyActions.js";
+
+const currentUser = auth().currentUser;
 
 export default function Index(props) {
     const [componentIndex, setComponentIndex] = useState(0);
     const [currentComponent, setCurrentComponent] = useState("Welcome");
-
     const components = { Welcome, Movies, Movie, Favorites };
     const componentKeys = ["Welcome", "Movies", "Movie", "Favorites"];
-    // const headers = { Welcome: "My Movies Log", Movies: "Most Popular Movies", Movie: "Movie", Favorites: "Favorites" };
 
-    const [popularMovies, popularResult, errorFetchMessage] = useFetch();
+    const [favoriteList, setFavoriteList, fetchFavorites, favoritesHandler, popularMovies, popularResult, errorFetchMessage] = useFetch();
     const [indexPagination, setIndexPagination] = useState(1);
-
-    const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState();
 
     const [movieList, setMovieList] = useState([])
     const [renderedMovie, setRenderedMovie] = useState([]);
-    const [favoriteList, setFavoriteList] = useState([]);
-
-    let history = useHistory();
 
     useEffect(() => {
-        console.log("\ncomponentIndex: $0" + componentIndex)
+        fetchFavorites()
         if (componentIndex === 0) {
             setCurrentComponent("Welcome");
         }
@@ -46,20 +38,11 @@ export default function Index(props) {
             setCurrentComponent("Movie");
         }
         // TODO: setPreviewIndex OR setFlag on and check flag when pressing back button come from Favorites. than the back should returns to Favorites screen and not  
-        if (componentIndex === 3) {
-            // history.push("Welcome");
-        }
-        // console.log("componentIndex: ", componentIndex);
-
     }, [componentIndex])
 
     useEffect(() => {
-        // fetchMovies();
         popularMovies(indexPagination)
         setMovieList([...movieList, popularResult])
-        // setMovieList(...movieList, popularResult)
-        // console.log("\n############\n$0" + indexPagination)
-        // console.log("\term:\n" + term+'\n-------')
     }, [indexPagination]);
 
     const handleFooterBar = (page) => {
@@ -81,10 +64,12 @@ export default function Index(props) {
 
     // update the movie list
     const renderedMovieHandler = async (movie) => {
+        await fetchFavorites()
         setRenderedMovie(movie);
         setComponentIndex(2)
     }
 
+<<<<<<< HEAD
     // update the movies list
     const favoritesHandler = (movie) => {
         console.log("Movie to be rendered: " + JSON.stringify(movie.title));
@@ -124,12 +109,16 @@ export default function Index(props) {
         setUser(user);
         if (initializing) setInitializing(false);
     }
+=======
+>>>>>>> features/firestore-setup
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        fetchFavorites()
         return subscriber;
     }, []);
 
+<<<<<<< HEAD
     if (initializing) return null;
 
     onGoogleButtonPress = async () => {
@@ -195,6 +184,8 @@ export default function Index(props) {
             </>
         );
     }
+=======
+>>>>>>> features/firestore-setup
 
     const CurrentComponentRouter = () => {
         if (!components[currentComponent]) return <ActivateIndicator />
@@ -215,7 +206,7 @@ export default function Index(props) {
             errorFetchMessage={errorFetchMessage}
 
             favoriteList={favoriteList}
-            setFavoriteList={setFavoriteList}
+            setFavoriteList={fetchFavorites}
 
             indexPagination={indexPagination}
             setIndexPagination={setIndexPagination}
@@ -235,7 +226,6 @@ export default function Index(props) {
             <HeaderBar
                 componentIndex={componentIndex}
 
-                // header={headers[componentKeys[componentIndex]]}
                 onBack={() => {
                     if (componentIndex === 3) setComponentIndex(0);
                     else setComponentIndex(componentIndex - 1);
@@ -245,7 +235,10 @@ export default function Index(props) {
                     setComponentIndex(componentIndex + 1)
                 }}
             />
-            <Login />
+            <Login
+                componentIndex={componentIndex}
+                fetchFavorites={fetchFavorites}
+            />
             <CurrentComponentRouter />
 
             <FooterBar handleFooterBar={(screen) => { handleFooterBar(screen) }} />
@@ -259,6 +252,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+<<<<<<< HEAD
     },
     profileContainer: {
         flexDirection: 'row',
@@ -290,4 +284,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 40,
     },
+=======
+    }
+>>>>>>> features/firestore-setup
 });

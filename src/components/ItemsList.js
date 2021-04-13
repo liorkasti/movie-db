@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, View, SafeAreaView, FlatList, Dimensions } from "react-native";
 
 import MovieCard from './MovieCard';
@@ -6,21 +6,12 @@ import FavoriteCard from './FavoriteCard';
 
 const ItemsList = (props) => {
 
-  useEffect(() => {
-    // console.warn("------------------\n\nItemsList props.results: \n\n-------------------------", JSON.stringify(props.results) + '---------------------')
-    if (props.favoriteList.length) {
-      
-    }
-
-  }, [])
-
   return (
     <View style={styles.container}>
       <SafeAreaView>
         {/* --------------------- Movies View: --------------------- */}
         {props.componentIndex === 1 &&
 
-          // TODO: Add react-native-pagination 
           <FlatList
             keyExtractor={(item, index) => item.id.toString()}
             data={props.results}

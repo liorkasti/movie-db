@@ -1,8 +1,8 @@
-import React, {  useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import {COLORS} from '../utils/constants';
+import { COLORS } from '../utils/constants';
 
 const FavoriteCard = props => {
 
@@ -15,7 +15,6 @@ const FavoriteCard = props => {
                 style={styles.cardContainer}
                 onPress={() => {
                     props.onSelectedMovie(props.itemData.movie)
-                    // console.log("Movie Selected: ", props.title)
                 }}
             >
                 <Image
@@ -27,14 +26,14 @@ const FavoriteCard = props => {
                     {props.title}
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 style={styles.removeContainer}
                 onPress={() => { props.onPressFavorite(props.itemData) }}
             >
                 <Text style={styles.removeText}>REMOVE </Text>
                 <Icon name='star' style={styles.iconActive} />
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View >
     );
 };
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         margin: 10,
         backgroundColor: COLORS.movieDark,
-        backgroundColor: COLORS.lightCard,
+        // backgroundColor: COLORS.lightCard,
         borderColor: COLORS.lightCard,
         borderRadius: 20,
         borderWidth: 1.7,

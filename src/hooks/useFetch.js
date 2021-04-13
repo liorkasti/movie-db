@@ -1,15 +1,55 @@
-import { useEffect, useState } from 'react';
-import { ActivateIndicator } from "react-native"
+import { useState } from 'react';
 import axios from 'axios';
-// import AsyncStorage from '@react-native-community/async-storage';
+import database from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-import {TMDB} from "../utils/constants";
+import { TMDB } from "../utils/constants";
+
+const currentUser = auth().currentUser;
 
 export default () => {
     const [popularResult, setPopularResult] = useState([]);
     const [errorFetchMessage, setErrorFetchMessage] = useState('');
-    const [loading, setLoading] = useState(true)
+    const [favoriteList, setFavoriteList] = useState([]);
     const [isStared, setIsStared] = useState(false);
+
+    const fetchFavorites = async () => {
+        database().collection('users').doc(currentUser.email).get()
+            .then(userData => {
+                if (userData.exists) {
+                    setFavoriteList(userData.data().favorites)
+                } else { console.log('no such document!') }
+            })
+            .catch(err => {
+                console.log('Error getting documents', err);
+            });
+    }
+
+    // update the favorite list
+    const favoritesHandler = async (movie) => {
+        const index = popularResult.findIndex(m => m.id === movie.id);
+        if (popularResult[index].stared) { // remove from favorite list
+            popularResult[index].stared = false
+            database()
+                .collection('users')
+                .doc(currentUser.email)
+                .update({
+                    favorites: database.FieldValue.delete({ movie })
+                }).then(fetchFavorites())
+
+        } else { // add to favorite list
+            database()
+                .collection('users')
+                .doc(currentUser.email)
+                .update({
+                    favorites: database.FieldValue.arrayUnion({ movie })
+                })
+                .then(
+                    fetchFavorites(),
+                    popularResult[index].stared = true
+                )
+        }
+    }
 
     const popularMovies = async (indexPagination) => {
         try {
@@ -17,30 +57,20 @@ export default () => {
 
             await axios.get(TMDB.baseURL + TMDB.popular + TMDB.Authorization + '&page=' + indexPagination)
                 .then(response => {
-                    // console.log(TMDB.baseURL + TMDB.popular + TMDB.Authorization + '&page=' + indexPagination)
                     response.data.results.forEach(movie => {
                         res.push({
                             id: movie.id, title: movie.title, rating: movie.vote_average,
                             poster: movie.poster_path, summary: movie.overview, year: movie.release_date,
                             stared: isStared
                         })
-                        // )
-                        // console.log('moviesResult: ', (movie.title));
                         setPopularResult(res)
-
-                        if (isStared) {
-                            // favoriteList.movie.filter(m => m.title !== movie.title);
-                        }
                     });
                 })
-            // .finally(() => {
-            //     setPopularResult(res)
-            // })
         } catch (error) {
             console.error('There was an error!', error);
             setErrorFetchMessage('Something went wrong');
         }
     }
 
-    return [popularMovies, popularResult, errorFetchMessage];
+    return [favoriteList, setFavoriteList, popularMovies, favoritesHandler, popularMovies, popularResult, errorFetchMessage];
 };

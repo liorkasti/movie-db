@@ -16,6 +16,3 @@ export const COLORS = {
   favorite: '#FFDF00',
   remove: '#ff0000'
 };
-
-export const firebase = {
-};

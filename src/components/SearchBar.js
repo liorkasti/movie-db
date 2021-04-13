@@ -6,7 +6,6 @@ const SearchBar = ({ term, onTermChange, onTermSubmit }) => {
   return (
     <View style={styles.row}>
 
-        {/* <Icon name="movie-search-outline" style={styles.searchBoxIcon} /> */}
       <TouchableOpacity onPress={onTermSubmit} style={styles.searchBtn}>
         <Icon name="movie-search-outline" style={styles.searchBoxIconBtn} />
       </TouchableOpacity>
@@ -25,15 +24,7 @@ const SearchBar = ({ term, onTermChange, onTermSubmit }) => {
 };
 
 const styles = StyleSheet.create({
-  row: {
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // width: '100%',
-    // paddingVertical: 20,
-    // paddingHorizontal: 10,
-    //     justifyContent: 'center',
-    // alignItems: 'center',
-  },
+  row: {},
   searchBox: {
     zIndex: 9,
     justifyContent: 'center',

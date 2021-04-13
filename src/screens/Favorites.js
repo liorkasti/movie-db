@@ -1,22 +1,20 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, View, Text, Dimensions } from "react-native";
 
-import {COLORS} from '../utils/constants';
+import { COLORS } from '../utils/constants';
 import ItemsList from '../components/ItemsList'
 
 export default function Favorites(props) {
 
-  useEffect(() => {
-    
-  }, [])
 
-  const title = "My Favorites Movies";
+  const title = "Favorite Movies";
   const emptyList = "Your List is Empty!";
+  const instructions = "Please select a movie from the list by pressing on the star.";
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      {props.favoriteList ?
+      {props.favoriteList.length ?
         <ItemsList
           componentIndex={props.componentIndex}
           favoriteList={props.favoriteList}
@@ -28,7 +26,10 @@ export default function Favorites(props) {
           style={styles.results}
         />
         :
-        <Text style={styles.emptyList}>{emptyList}</Text>
+        <>
+          <Text style={styles.emptyList}>{emptyList}</Text>
+          <Text style={styles.instructions}>{instructions}</Text>
+        </>
       }
 
     </View >
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    color: '#fff',
+    color: COLORS.favorite,
     marginBottom: 70,
     paddingHorizontal: 20,
     fontSize: 32,
@@ -64,12 +65,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   emptyList: {
-    color: '#fff',
-    color: COLORS.movieLight,
+    color: COLORS.movieGreen,
     marginTop: '50%',
     // top: '50%',
     paddingHorizontal: 20,
     fontSize: 18,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  instructions: {
+    color: COLORS.movieLight,
+    marginTop: 10,
+    // top: '50%',
+    paddingHorizontal: 20,
+    fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
   },

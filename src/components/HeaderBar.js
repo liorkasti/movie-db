@@ -1,20 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Image, } from "react-native";
+import React from "react";
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { COLORS } from '../utils/constants';
 
 const HeaderBar = (props) => {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-
-    if (open) props.setShowMenu(false)
-  }, [props.componentIndex]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.bsD1}>BS&quot;D</Text>
+<<<<<<< HEAD
       <View style={styles.buttonstack}>
         {/* <TouchableOpacity onPress={() => {
           // TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option
@@ -25,6 +20,14 @@ const HeaderBar = (props) => {
             style={styles.menuIcon}>
           </Icon>
         {/* </TouchableOpacity> */}
+=======
+      <View style={styles.buttonStack}>
+        {/* TODO: Add an account menu with a user subscriptions options via Facebook, email and password, sms verifications and delete user option */}
+        <Icon
+          name="menu"
+          style={styles.menuIcon}>
+        </Icon>
+>>>>>>> features/firestore-setup
 
         {props.componentIndex > 0 &&
           <>
@@ -44,14 +47,18 @@ const HeaderBar = (props) => {
 }
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
+<<<<<<< HEAD
     width: windowWidth,
     height: 62,
   },
   buttonstack: {
+=======
+  },
+  buttonStack: {
+>>>>>>> features/firestore-setup
     flexDirection: 'row',
     width: windowWidth,
   },
@@ -66,13 +73,20 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     zIndex: 900,
+<<<<<<< HEAD
     // justifyContent: 'flex-end',
+=======
+>>>>>>> features/firestore-setup
     color: COLORS.lightCard,
     fontSize: 35,
     width: 24,
     height: 30,
     top: 0,
+<<<<<<< HEAD
     left: windowWidth*0.9
+=======
+    left: windowWidth * 0.9
+>>>>>>> features/firestore-setup
   },
   backIcon: {
     zIndex: 900,
@@ -84,15 +98,6 @@ const styles = StyleSheet.create({
     top: 0,
     right: 20
   },
-  header: {
-    position: "absolute",
-    width: '100%',
-    color: "#4287f5",
-    color: COLORS.movieGreen,
-    fontSize: 20,
-    fontFamily: "roboto-regular",
-    textAlign: "center",
-  }
 });
 
 export default HeaderBar;
