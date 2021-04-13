@@ -19,52 +19,48 @@ export default () => {
         // console.log('fetch list data: ' + JSON.stringify(favoriteList))
       }, [])
 
-    const fetchFavorites = async () => {
-        // console.log("currentUser: " + JSON.stringify(currentUser.providerData))
-        const list = database().collection('users').doc(currentUser.email)
-            .get()
+      const fetchFavorites = async () => {
+        console.log("currentUser: " + JSON.stringify(currentUser.providerData))
+        database().collection('users').doc(currentUser.email).get()
             .then(userData => {
                 if (userData.exists) {
-                    console.log('userData: ' + JSON.stringify(userData.data().favorites) + ', ')
+                    console.log('fetchFavorites data list: ' + JSON.stringify(userData.data().favorites) + ', \n---\n ')
+                    setFavoriteList(userData.data().favorites)
                 }
-                else {
-                    console.log('no such document!')
-                }
-
-                setFavoriteList(list)
+                else { console.log('no such document!') }
+                console.log('favoriteList: ' + JSON.stringify(favoriteList) + ', \n---\n ')
             })
             .catch(err => {
                 console.log('Error getting documents', err);
             });
     }
 
+    // update the favorite list
     const favoritesHandler = async (movie) => {
-
-        console.log("favoriteList: " + JSON.stringify(favoriteList));
-        console.log("Movie to be rendered: " + JSON.stringify(movie.title));
+        console.log("Movie to be rendered: " + JSON.stringify(movie.id));
         const index = popularResult.findIndex(m => m.id === movie.id);
         console.log("exist? " + (popularResult[index].stared))
         console.log("index: " + (index))
-        if (popularResult[index].stared) {
+        if (popularResult[index].stared) { // remove from favorite list
             popularResult[index].stared = false
-            setFavoriteList(favoriteList.filter(m => m.id !== movie.id));
-            // await setFavoriteList(favoriteList.movie.filter(popularMovies[index]));
-            //  setFavoriteList(favoriteList.splice(favoriteList[index],1));
             database()
                 .collection('users')
-                .doc(currentUser.email).set({ favorites: favoriteList})
-                .then(fetchFavorites())
+                .doc(currentUser.email)
+                .update({
+                    favorites: database.FieldValue.delete({ movie })
+                }).then(fetchFavorites())
 
-            // await setFavoriteList(removeFavorite(favoriteList, movie));
-            // await setFavoriteList(favoriteList.filter(m => m.id !== movie.id));
-            // setComponentIndex(1)
-        } else {
-            // setFavoriteList(appendToFavorites(popularResult, favoriteList, movie))
+        } else { // add to favorite list
             popularResult[index].stared = true
             database()
                 .collection('users')
-                .doc(currentUser.email).update({ favorites: [...favoriteList, movie] })
-                .then(setFavoriteList([...favoriteList, { movie }]))
+                .doc(currentUser.email)
+                .update({
+                    favorites: database.FieldValue.arrayUnion({ movie })
+                })
+                // .update({ favorites: [...favoriteList, { movie, stared: true }] })
+                .then(fetchFavorites())
+
         }
     }
 
@@ -99,6 +95,6 @@ export default () => {
         }
     }
 
-    // return [favoriteList, fetchFavorites, favoritesHandler, popularMovies, popularResult, errorFetchMessage];
-    return [popularMovies, popularResult, errorFetchMessage];
+    return [favoriteList, setFavoriteList, fetchFavorites, favoritesHandler, popularMovies, popularResult, errorFetchMessage];
+    // return [popularMovies, popularResult, errorFetchMessage];
 };
