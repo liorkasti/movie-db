@@ -26,7 +26,7 @@ const Login = (props) => {
     const logoff = () => {
         auth()
             .signOut()
-            .then(() => console.log('User signed out!'));
+            .then(() => props.fetchFavorites(), console.log('User signed out!'));
     }
 
     onAuthStateChanged = (user) => {

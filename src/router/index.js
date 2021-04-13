@@ -96,7 +96,7 @@ export default function Index(props) {
             errorFetchMessage={errorFetchMessage}
 
             favoriteList={favoriteList}
-            setFavoriteList={setFavoriteList}
+            setFavoriteList={fetchFavorites}
 
             indexPagination={indexPagination}
             setIndexPagination={setIndexPagination}
@@ -125,7 +125,10 @@ export default function Index(props) {
                     setComponentIndex(componentIndex + 1)
                 }}
             />
-            <Login componentIndex={componentIndex} />
+            <Login
+                componentIndex={componentIndex}
+                fetchFavorites={fetchFavorites}
+            />
             <CurrentComponentRouter />
 
             <FooterBar handleFooterBar={(screen) => { handleFooterBar(screen) }} />
