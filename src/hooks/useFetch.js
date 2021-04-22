@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import database from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 import { TMDB } from "../utils/constants";
-
-const currentUser = auth().currentUser;
 
 export default () => {
     const [popularResult, setPopularResult] = useState([]);
@@ -13,16 +11,35 @@ export default () => {
     const [favoriteList, setFavoriteList] = useState([]);
     const [isStared, setIsStared] = useState(false);
 
+    const currentUser = auth().currentUser;
+
+    // useEffect(() => {
+    //     if (currentUser) {
+    //         database()
+    //             .ref(`/users/favorites/${currentUser.email}`)
+    //             .once('value')
+    //             .then(snapshot => {
+    //                 const response = snapshot.val();
+    //                 console.warn("response favorites", response)
+    //                 setFavoriteList(response.favorites);
+    //             })
+    //     }
+    // }, []);
+
     const fetchFavorites = async () => {
-        database().collection('users').doc(currentUser.email).get()
-            .then(userData => {
-                if (userData.exists) {
-                    setFavoriteList(userData.data().favorites)
-                } else { console.log('no such document!') }
-            })
-            .catch(err => {
-                console.log('Error getting documents', err);
-            });
+        console.log('currentUser: ', currentUser)
+        if (currentUser) {
+            database().collection('users').doc(currentUser.email).get()
+                .then(userData => {
+                    if (userData.exists) {
+                        console.log('userData: ', userData)
+                        setFavoriteList(userData.data().favorites)
+                    } else { console.log('no such document!') }
+                })
+                .catch(err => {
+                    console.log('Error getting documents', err);
+                });
+        }
     }
 
     // update the favorite list

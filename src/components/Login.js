@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { StyleSheet, Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-community/google-signin';
+import database from '@react-native-firebase/firestore';
 
+import useFetch from '../hooks/useFetch';
 import { COLORS } from '../utils/constants';
 
 const Login = (props) => {
+    const [user, setUser] = useState('');
+    const [loaded, setLoaded] = useState(false);
+    const [favoriteList, setFavoriteList, fetchFavorites, favoritesHandler, popularMovies, popularResult, errorFetchMessage] = useFetch();
 
-    const [user, setUser] = useState();
+    const currentUser = auth().currentUser;
 
     function wait(timeout) {
         return new Promise(resolve => {
@@ -23,25 +28,52 @@ const Login = (props) => {
     const logoff = () => {
         auth()
             .signOut()
-            .then(() => props.fetchFavorites(), console.log('User signed out!'));
+            .then(() => {
+                fetchFavorites();
+                setLoaded(false);
+                console.log('User signed out!');
+            });
     }
 
     onAuthStateChanged = (user) => {
-        wait(200).then(() => (
-            setUser(user), fetchFavorites())
-        );
+        if (user) {
+            // setUser(user)
+            // setLoaded(!loaded)
+            // , fetchFavorites()
+            // wait(1000).then(() => (
+            // setUser(user), fetchFavorites())
+            // console.log('cur user uid: ', { user })
+            // console.log('loaded status: ', loaded)
+            // ))
+        }
     }
 
 
     onGoogleButtonPress = async () => {
         try {
             const { idToken } = await GoogleSignin.signIn();
-            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+            const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
 
             await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
+            const userInfo = await GoogleSignin.signIn()
+
             if (userInfo) {
-                console.log("GOOGLE USER", userInfo.user);
+                console.log('User data: ', userInfo.user)
+                try {
+                    await database()
+                        .collection('users')
+                        .doc(userInfo.user.email)
+                        .set({ favorites: favoriteList })
+                        .then(
+                            setUser(userInfo.user),
+                            setLoaded(true)
+                        )
+
+                    console.log('User data: ', user)
+                    console.log('loaded status: ', loaded)
+                    console.log('User added!')
+
+                } catch (e) { console.log("database update has failed!") }
             }
             return auth().signInWithCredential(googleCredential);
         } catch {
@@ -60,7 +92,7 @@ const Login = (props) => {
         }
     }
 
-    if (!user) {
+    if (!loaded) {
         return (
             <View>
                 <GoogleSigninButton

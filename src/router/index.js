@@ -73,6 +73,7 @@ export default function Index(props) {
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         fetchFavorites()
+        console.log("subscriber: ", subscriber.toString())
         return subscriber;
     }, []);
 
