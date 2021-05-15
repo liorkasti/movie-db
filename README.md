@@ -4,7 +4,7 @@ A react-native app that enabled the user to add favorites movies from the great 
 ### Installation:
 For clone down this repository, run:
 ```
-git clone https://github.com/liorkasti/myMovies.git
+git clone https://github.com/liorkasti/movie-db.git
 ```
 You will need node and npm installed globally on your machine.Run:
 ```
