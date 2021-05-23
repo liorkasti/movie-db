@@ -1,4 +1,4 @@
-# myMovies native app 
+# MovieDB app 
 ## Description:
 A react-native app that enabled the user to add favorites movies from the great library of TMDB API.
 ### Installation:
